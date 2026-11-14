@@ -23,6 +23,8 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools'
 
       - name: Install Capacitor
         run: |
@@ -35,7 +37,7 @@ jobs:
           cp index.html manifest.json sw.js icon.png www/
 
       - name: Init Capacitor
-        run: npx cap init "Go to Germany" "com.gotogermany.app" --web-dir=www
+        run: npx cap init GoToGermany com.gotogermany.app --web-dir=www
 
       - name: Add Android platform
         run: |
