@@ -1,0 +1,46 @@
+{
+  "name": "Deutsch A1 - Erweitert",
+  "short_name": "Deutsch A1",
+  "description": "Lehrbuch Deutsch A1 mit Übungen, Flashcards und Modelltests (Goethe & ÖSD)",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f4f6f9",
+  "theme_color": "#2c3e50",
+  "lang": "de",
+  "dir": "ltr",
+  "categories": ["education", "books", "productivity"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Lektion 1",
+      "url": "./index.html#lektion1"
+    },
+    {
+      "name": "Goethe A1 Test",
+      "url": "./index.html#goethe-exam"
+    },
+    {
+      "name": "Glossar",
+      "url": "./index.html#glossar"
+    },
+    {
+      "name": "Flashcards",
+      "url": "./index.html#flashcards"
+    }
+  ]
+}

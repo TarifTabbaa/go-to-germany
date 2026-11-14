@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="de" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="description" content="Lehrbuch Deutsch A1 mit interaktiven Übungen, Flashcards und Modelltests">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Go to Germany">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<title>Go to Germany - Deutsch A1</title>
+<style>
+:root {
+  --primary-color: #2c3e50; --secondary-color: #3498db;
+  --bg-color: #f4f6f9; --text-color: #333;
+  --box-bg: #e8f4f8; --grammar-bg: #eafaf1;
+  --redemittel-bg: #fdf2e9; --landeskunde-bg: #f4ecf7;
+  --uebung-bg: #f8f9fa; --sidebar-bg: #ffffff;
+  --border-color: #ddd; --success: #27ae60; --danger: #e74c3c;
+  --shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+[data-theme="dark"] {
+  --primary-color: #ecf0f1; --secondary-color: #5dade2;
+  --bg-color: #1a1a2e; --text-color: #e0e0e0;
+  --box-bg: #16213e; --grammar-bg: #1e3b2e;
+  --redemittel-bg: #3b261e; --landeskunde-bg: #2e1e3b;
+  --uebung-bg: #1e1e2e; --sidebar-bg: #16213e;
+  --border-color: #444; --shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6; color: var(--text-color);
+  background-color: var(--bg-color); margin: 0; padding: 0;
+  transition: background-color 0.3s, color 0.3s;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* PWA Safe Area Support */
+.progress-container { top: env(safe-area-inset-top) !important; }
+
+/* Progress Bar */
+.progress-container {
+  position: fixed; top: 0; left: 0; width: 100%;
+  height: 32px; background: var(--sidebar-bg);
+  border-bottom: 2px solid var(--secondary-color);
+  z-index: 1500; display: flex; align-items: center;
+  padding: 0 20px; font-size: 0.85em; gap: 10px;
+}
+.progress-bar {
+  flex: 1; height: 8px; background: var(--border-color);
+  border-radius: 10px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; background: linear-gradient(90deg, #2ecc71, #3498db);
+  width: 0%; transition: width 0.5s ease; border-radius: 10px;
+}
+.progress-text { font-weight: bold; color: var(--secondary-color); min-width: 70px; }
+
+/* Layout */
+.layout { display: flex; max-width: 1200px; margin: 40px auto 0; }
+
+/* Sidebar */
+.sidebar {
+  width: 260px; position: fixed; top: 40px; left: 0;
+  height: calc(100vh - 40px); background: var(--sidebar-bg);
+  padding: 20px; box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+  overflow-y: auto; z-index: 1000; transition: transform 0.3s ease;
+}
+.sidebar h3 { margin-top: 0; border-bottom: 2px solid var(--secondary-color); padding-bottom: 8px; }
+.sidebar ul { list-style: none; padding: 0; }
+.sidebar li { margin-bottom: 8px; }
+.sidebar a {
+  text-decoration: none; color: var(--secondary-color);
+  font-weight: 600; font-size: 0.88em; display: block;
+  padding: 4px 8px; border-radius: 5px; transition: background 0.2s;
+}
+.sidebar a:hover { background: var(--box-bg); }
+.sidebar-close { display: none; }
+.menu-toggle {
+  display: none; position: fixed; top: calc(42px + env(safe-area-inset-top)); left: 10px; z-index: 1600;
+  background: var(--secondary-color); color: white;
+  border: none; padding: 8px 12px; border-radius: 5px;
+  font-size: 1.2em; cursor: pointer;
+}
+.overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5); z-index: 999;
+}
+.overlay.active { display: block; }
+
+/* Container */
+.container {
+  flex: 1; margin-left: 280px; background: var(--sidebar-bg);
+  padding: 40px; box-shadow: var(--shadow); border-radius: 8px;
+  margin-bottom: 20px; transition: background-color 0.3s;
+}
+@media (max-width: 900px) {
+  .layout { flex-direction: column; margin-top: 40px; }
+  .sidebar { transform: translateX(-100%); width: 280px; }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-close {
+    display: block; position: absolute; top: 10px; right: 10px;
+    background: var(--danger); color: white; border: none;
+    padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 1em;
+  }
+  .menu-toggle { display: block; }
+  .container { margin-left: 0; padding: 20px; margin: 10px; }
+}
+
+/* Headings */
+h1, h2, h3 { color: var(--primary-color); padding-bottom: 5px; }
+h1 { text-align: center; font-size: 2.3em; margin-bottom: 10px; border-bottom: none; }
+h2 { border-bottom: 2px solid var(--secondary-color); margin-top: 40px; }
+h3 { border-bottom: 1px solid var(--border-color); font-size: 1.15em; }
+.subtitle { text-align: center; color: #7f8c8d; margin-bottom: 30px; font-size: 1.1em; }
+
+/* Lesson Block */
+.lektion { margin-bottom: 50px; padding-top: 10px; }
+.lektion-header {
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 10px;
+}
+.done-btn {
+  background: var(--success); color: white; border: none;
+  padding: 8px 14px; border-radius: 20px; cursor: pointer;
+  font-size: 0.85em; font-weight: bold; transition: all 0.2s;
+}
+.done-btn:hover { transform: scale(1.05); }
+.done-btn.completed { background: #7f8c8d; }
+.done-btn.completed::before { content: "✓ "; }
+
+/* Boxes */
+.box, .grammar-box, .text-box, .vocab-box, .redemittel-box,
+.landeskunde-box, .uebung-box {
+  padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0;
+}
+.box { background: var(--box-bg); border-left: 5px solid var(--secondary-color); }
+.grammar-box { background: var(--grammar-bg); border-left: 5px solid #2ecc71; }
+.text-box { background: var(--sidebar-bg); border: 1px solid var(--border-color); font-style: italic; position: relative; }
+.vocab-box { background: #fff9e6; border-left: 5px solid #f1c40f; color: #333; }
+.redemittel-box { background: var(--redemittel-bg); border-left: 5px solid #e67e22; }
+.landeskunde-box { background: var(--landeskunde-bg); border-left: 5px solid #9b59b6; }
+.uebung-box { background: var(--uebung-bg); border: 2px dashed var(--secondary-color); }
+
+.grammar-box h3::before { content: "⚙️ "; }
+.text-box h3::before { content: "📖 "; }
+.vocab-box h3::before { content: "📚 "; }
+.redemittel-box h3::before { content: "🗣️ "; }
+.landeskunde-box h3::before { content: "🌍 "; }
+.uebung-box h3::before { content: "✏️ "; }
+
+/* Speak Button */
+.speak-btn {
+  background: var(--secondary-color); color: white; border: none;
+  padding: 4px 10px; border-radius: 15px; cursor: pointer;
+  font-size: 0.85em; margin-left: 8px; transition: transform 0.15s;
+}
+.speak-btn:hover { transform: scale(1.1); }
+.speak-all {
+  position: absolute; top: 10px; right: 10px;
+  background: var(--secondary-color); color: white; border: none;
+  padding: 6px 12px; border-radius: 15px; cursor: pointer; font-size: 0.85em;
+}
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95em; }
+th, td { border: 1px solid var(--border-color); padding: 10px; text-align: left; }
+th { background: var(--primary-color); color: var(--bg-color); }
+tr:nth-child(even) { background: var(--bg-color); }
+tr:hover { background: var(--box-bg); }
+
+/* Type Badges */
+.type {
+  font-weight: bold; font-size: 0.75em; display: inline-block;
+  padding: 2px 8px; border-radius: 4px; color: white; white-space: nowrap;
+}
+.badge-N { background: #2980b9; }
+.badge-V { background: #c0392b; }
+.badge-Adj { background: #f39c12; }
+.badge-Adv { background: #9b59b6; }
+.badge-Pron { background: #16a085; }
+.badge-Präp { background: #d35400; }
+.badge-Konj { background: #34495e; }
+.badge-Interj { background: #8e44ad; }
+.badge-Präf { background: #7f8c8d; }
+
+.arabic { font-family: 'Traditional Arabic', 'Arial', sans-serif; direction: rtl; font-size: 1.05em; }
+
+/* Flashcards */
+.flashcard-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px; margin: 20px 0;
+}
+.flashcard {
+  perspective: 1000px; height: 140px; cursor: pointer;
+}
+.flashcard-inner {
+  position: relative; width: 100%; height: 100%;
+  transition: transform 0.6s; transform-style: preserve-3d;
+}
+.flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+.flashcard-front, .flashcard-back {
+  position: absolute; inset: 0; backface-visibility: hidden;
+  border-radius: 10px; padding: 15px; display: flex;
+  align-items: center; justify-content: center; text-align: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15); flex-direction: column; gap: 5px;
+}
+.flashcard-front { background: var(--box-bg); font-weight: bold; font-size: 1em; }
+.flashcard-back {
+  background: var(--secondary-color); color: white;
+  transform: rotateY(180deg); font-size: 0.95em;
+}
+
+/* Interactive Quiz */
+.quiz-item {
+  background: var(--sidebar-bg); padding: 12px; margin: 10px 0;
+  border-radius: 6px; border-left: 3px solid var(--secondary-color);
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+}
+.quiz-item input[type="text"] {
+  padding: 6px 10px; border: 2px solid var(--border-color);
+  border-radius: 5px; font-size: 0.95em;
+  background: var(--bg-color); color: var(--text-color); min-width: 100px;
+}
+.quiz-item input.correct { border-color: var(--success); background: #d5f4e6; }
+.quiz-item input.wrong { border-color: var(--danger); background: #fadbd8; color: #333; }
+.quiz-check {
+  padding: 5px 12px; background: var(--secondary-color);
+  color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85em;
+}
+.quiz-feedback { font-weight: bold; font-size: 0.9em; }
+
+/* Details */
+details {
+  background: var(--sidebar-bg); padding: 10px;
+  border-radius: 5px; margin-top: 10px;
+  border: 1px solid var(--border-color);
+}
+summary {
+  font-weight: bold; color: var(--secondary-color);
+  cursor: pointer; user-select: none;
+}
+summary:hover { text-decoration: underline; }
+.loesung { color: var(--success); font-weight: bold; margin-top: 8px; }
+
+/* Search */
+.search-container { margin: 20px 0; position: sticky; top: 40px; z-index: 10; background: var(--sidebar-bg); padding: 10px 0; }
+#glossarSearch {
+  width: 100%; padding: 12px 20px; box-sizing: border-box;
+  border: 2px solid var(--secondary-color); border-radius: 25px;
+  font-size: 16px; background: var(--bg-color); color: var(--text-color);
+}
+
+/* Buttons */
+.theme-toggle, .back-to-top {
+  position: fixed; bottom: 20px; padding: 12px 15px;
+  background: var(--secondary-color); color: white;
+  border: none; border-radius: 50%; cursor: pointer;
+  font-size: 1.1em; box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  z-index: 1001; text-decoration: none; width: 48px; height: 48px;
+  display: flex; align-items: center; justify-content: center;
+}
+.theme-toggle { right: 80px; }
+.back-to-top { right: 20px; }
+.theme-toggle:hover, .back-to-top:hover { transform: scale(1.1); }
+
+/* Install Button */
+#installBtn {
+  position: fixed;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  left: 20px;
+  padding: 12px 18px;
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 0.95em;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 1002;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Lernziele */
+.lernziele-box {
+  background: var(--sidebar-bg); border: 1px solid var(--secondary-color);
+  padding: 15px; border-radius: 8px; margin-bottom: 20px;
+}
+.lernziele-box h3::before { content: "🎯 "; }
+
+/* Wiederholung */
+.wiederholung { background: linear-gradient(135deg, var(--box-bg), var(--landeskunde-bg)); border-radius: 10px; padding: 25px; margin-bottom: 40px; }
+
+/* Print */
+@media print {
+  .sidebar, .theme-toggle, .back-to-top, .menu-toggle,
+  .progress-container, .overlay, .speak-btn, .speak-all,
+  .done-btn, .quiz-check, #installBtn { display: none !important; }
+  .container { margin: 0; padding: 10px; box-shadow: none; }
+  details { display: block; }
+  details summary { display: none; }
+  body { background: white; color: black; }
+  .lektion { page-break-inside: avoid; }
+}
+
+/* Accordion */
+.accordion { margin: 15px 0; }
+.accordion-item { border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 8px; overflow: hidden; }
+.accordion-header {
+  padding: 12px 15px; background: var(--box-bg); cursor: pointer;
+  font-weight: bold; color: var(--primary-color); display: flex;
+  justify-content: space-between; align-items: center;
+}
+.accordion-header::after { content: "▼"; transition: transform 0.3s; font-size: 0.8em; }
+.accordion-item.open .accordion-header::after { transform: rotate(180deg); }
+.accordion-body { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.3s, padding 0.3s; }
+.accordion-item.open .accordion-body { max-height: 3000px; padding: 15px; }
+
+/* Alphabet Nav */
+.alpha-nav {
+  display: flex; flex-wrap: wrap; gap: 5px; margin: 15px 0;
+  padding: 10px; background: var(--box-bg); border-radius: 8px;
+}
+.alpha-nav a {
+  padding: 4px 10px; background: var(--secondary-color); color: white;
+  text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 0.85em;
+}
+.alpha-nav a:hover { background: var(--primary-color); }
+
+/* Exam Styles */
+.exam-box {
+  background: var(--uebung-bg); border: 3px solid var(--primary-color);
+  border-radius: 10px; padding: 25px; margin: 30px 0;
+}
+.exam-box h2 { border-bottom: 3px solid var(--primary-color); margin-top: 0; }
+.exam-part {
+  background: var(--sidebar-bg); border-radius: 8px; padding: 20px;
+  margin: 20px 0; border-left: 5px solid var(--secondary-color);
+}
+.exam-part h3 { color: var(--secondary-color); }
+.lesen-text {
+  background: var(--box-bg); padding: 15px; border-radius: 8px;
+  margin: 15px 0; font-style: normal;
+}
+.mc-options { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
+.mc-option {
+  padding: 8px 15px; border: 2px solid var(--border-color);
+  border-radius: 8px; cursor: pointer; background: var(--bg-color);
+  transition: all 0.2s; user-select: none;
+}
+.mc-option:hover { border-color: var(--secondary-color); }
+.mc-option.selected { border-color: var(--secondary-color); background: var(--box-bg); }
+.mc-option.correct { border-color: var(--success); background: #d5f4e6; color: #333; }
+.mc-option.wrong { border-color: var(--danger); background: #fadbd8; color: #333; }
+.exam-score {
+  font-size: 1.3em; font-weight: bold; text-align: center;
+  padding: 15px; background: var(--box-bg); border-radius: 8px; margin: 20px 0;
+}
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-container">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <span class="progress-text" id="progressText">0 / 14</span>
+</div>
+
+<!-- Mobile Menu -->
+<button class="menu-toggle" onclick="toggleMenu()">☰</button>
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+  <button class="sidebar-close" onclick="toggleMenu()">✕</button>
+  <h3>Go to Germany</h3>
+  <ul>
+    <li><a href="#grundlagen">Grundlagen</a></li>
+    <li><a href="#lektion1">Lektion 1: Erste Kontakte</a></li>
+    <li><a href="#lektion2">Lektion 2: Im Café</a></li>
+    <li><a href="#lektion3">Lektion 3: Länder & Sprachen</a></li>
+    <li><a href="#lektion4">Lektion 4: Termine</a></li>
+    <li><a href="#lektion5">Lektion 5: Beruf & Verkehr</a></li>
+    <li><a href="#lektion6">Lektion 6: Einkaufen</a></li>
+    <li><a href="#lektion7">Lektion 7: Mode & Wetter</a></li>
+    <li><a href="#lektion8">Lektion 8: Gesundheit</a></li>
+    <li><a href="#lektion9">Lektion 9: Erlebnisse</a></li>
+    <li><a href="#lektion10">Lektion 10: Familie</a></li>
+    <li><a href="#lektion11">Lektion 11: Feste</a></li>
+    <li><a href="#lektion12">Lektion 12: Reisen</a></li>
+    <li><a href="#lektion13">Lektion 13: Wohnen</a></li>
+    <li><a href="#lektion14">Lektion 14: Arbeit</a></li>
+    <li><a href="#wiederholung1">🔄 Wiederholung 1</a></li>
+    <li><a href="#wiederholung2">🔄 Wiederholung 2</a></li>
+    <li><a href="#wiederholung3">🔄 Wiederholung 3</a></li>
+    <li><a href="#grammatik-uebersicht">Grammatik</a></li>
+    <li><a href="#flashcards">🎴 Flashcards</a></li>
+    <li><a href="#goethe-exam">📝 Goethe A1 Test</a></li>
+    <li><a href="#oesd-exam">📝 ÖSD A1 Test</a></li>
+    <li><a href="#glossar">Glossar</a></li>
+  </ul>
+</nav>
+
+<!-- Buttons -->
+<button class="theme-toggle" onclick="toggleTheme()" title="Dark/Light Mode">🌓</button>
+<a href="#" class="back-to-top" title="Nach oben">↑</a>
+
+<!-- Install Button -->
+<button id="installBtn" onclick="installApp()">📲 App installieren</button>
+
+<div class="layout">
+<div class="container" style="width:100%;">
+<h1>Go to Germany</h1>
+<div class="subtitle">Deutsch A1 — Lehrbuch, Übungen & Modelltests</div>
+
+<!-- ============ GRUNDLAGEN ============ -->
+<div class="lektion" id="grundlagen">
+<div class="lektion-header">
+  <h2>Grundlagen: Alphabet, Zahlen, Zeit</h2>
+  <button class="done-btn" onclick="markDone('grundlagen', this)">Als erledigt markieren</button>
+</div>
+<div class="grammar-box">
+<h3>Das Alphabet</h3>
+<button class="speak-all" onclick="speak(this.nextElementSibling.textContent)">🔊 Vorlesen</button>
+<p>A (ah), B (beh), C (tseh), D (deh), E (eh), F (eff), G (geh), H (hah), I (ih), J (jott), K (kah), L (ell), M (emm), N (enn), O (oh), P (peh), Q (kuh), R (err), S (ess), T (teh), U (uh), V (fau), W (weh), X (icks), Y (ypsilon), Z (zett).</p>
+<p><strong>Umlaute:</strong> Ä, Ö, Ü. <strong>Eszett:</strong> ß.</p>
+</div>
+<div class="grammar-box">
+<h3>Die Zahlen (0 - 100)</h3>
+<table>
+<tr><td>0 null</td><td>10 zehn</td><td>20 zwanzig</td></tr>
+<tr><td>1 eins</td><td>11 elf</td><td>21 einundzwanzig</td></tr>
+<tr><td>2 zwei</td><td>12 zwölf</td><td>30 dreißig</td></tr>
+<tr><td>3 drei</td><td>13 dreizehn</td><td>40 vierzig</td></tr>
+<tr><td>4 vier</td><td>14 vierzehn</td><td>50 fünfzig</td></tr>
+<tr><td>5 fünf</td><td>15 fünfzehn</td><td>60 sechzig</td></tr>
+<tr><td>6 sechs</td><td>16 sechzehn</td><td>70 siebzig</td></tr>
+<tr><td>7 sieben</td><td>17 siebzehn</td><td>80 achtzig</td></tr>
+<tr><td>8 acht</td><td>18 achtzehn</td><td>90 neunzig</td></tr>
+<tr><td>9 neun</td><td>19 neunzehn</td><td>100 (ein)hundert</td></tr>
+</table>
+</div>
+<div class="grammar-box">
+<h3>Die Uhrzeit</h3>
+<p><strong>Offiziell:</strong> 14:30 = vierzehn Uhr dreißig.</p>
+<p><strong>Inoffiziell:</strong> 14:30 = halb drei. 15:15 = Viertel nach drei. 15:45 = Viertel vor vier.</p>
+</div>
+</div>
+
+<!-- ============ LEKTION 1 ============ -->
+<div class="lektion" id="lektion1">
+<div class="lektion-header">
+  <h2>Lektion 1: Erste Kontakte</h2>
+  <button class="done-btn" onclick="markDone('lektion1', this)">Als erledigt markieren</button>
+</div>
+<div class="lernziele-box">
+<h3>Lernziele</h3>
+<p>✅ Ich kann mich vorstellen.<br>✅ Ich kann nach Namen und Herkunft fragen.<br>✅ Ich kann buchstabieren.</p>
+</div>
+<h3>Sprachhandlungen</h3>
+<ul>
+<li>Internationale Wörter verstehen.</li>
+<li>Jemanden begrüßen.</li>
+<li>Sich und andere vorstellen.</li>
+<li>Nach Namen und Herkunft fragen.</li>
+<li>Buchstabieren.</li>
+</ul>
+<div class="grammar-box">
+<h3>Grammatik: Verbkonjugation & sein/haben</h3>
+<p><strong>wohnen:</strong> ich wohne, du wohnst, er/sie/es wohnt, wir wohnen, ihr wohnt, sie/Sie wohnen.</p>
+<p><strong>sein:</strong> ich bin, du bist, er/sie/es ist, wir sind, ihr seid, sie/Sie sind.</p>
+<p><strong>haben:</strong> ich habe, du hast, er/sie/es hat, wir haben, ihr habt, sie/Sie haben.</p>
+<h3>W-Fragen</h3>
+<p>Wie heißen Sie? Woher kommen Sie? Wo wohnen Sie?</p>
+</div>
+<div class="text-box">
+<h3>Alltagstext: An der Rezeption</h3>
+<button class="speak-all" onclick="speak(this.nextElementSibling.textContent)">🔊 Vorlesen</button>
+<div>
+<p><strong>Guten Tag!</strong> Ich bin die neue Studentin. Mein Name ist Anna Schmidt.</p>
+<p><em>Guten Tag, Frau Schmidt. <strong>Wie buchstabieren</strong> Sie Ihren Familiennamen?</em></p>
+<p>S-C-H-M-I-D-T.</p>
+<p><em>Danke. Und <strong>woher kommen</strong> Sie?</em></p>
+<p>Ich komme aus Spanien, aber ich wohne jetzt in Deutschland.</p>
+</div>
+</div>
+<div class="redemittel-box">
+<h3>Redemittel</h3>
+<ul>
+<li>Guten Tag! / Hallo! / Guten Morgen! / Guten Abend!</li>
+<li>Ich heiße... / Mein Name ist...</li>
+<li>Ich komme aus... / Ich wohne in...</li>
+<li>Wie bitte?</li>
+</ul>
+</div>
+<div class="landeskunde-box">
+<h3>Landeskunde</h3>
+<p>In Deutschland ist es üblich, sich mit Vor- und Nachnamen vorzustellen. „Du" benutzt man unter Freunden; „Sie" bei Fremden und im Beruf.</p>
+</div>
+<div class="uebung-box">
+<h3>Übungen</h3>
+<div class="quiz-item" data-answer="bin"><span>a) Ich</span><input type="text"><span>Anna.</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<div class="quiz-item" data-answer="bist"><span>b) Wo</span><input type="text"><span>du?</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<div class="quiz-item" data-answer="ist"><span>c) Er</span><input type="text"><span>Lehrer.</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">a) bin, b) bist, c) ist</p></details>
+</div>
+</div>
+
+<!-- ============ LEKTION 2 ============ -->
+<div class="lektion" id="lektion2">
+<div class="lektion-header">
+  <h2>Lektion 2: Im Café und im Kurs</h2>
+  <button class="done-btn" onclick="markDone('lektion2', this)">Als erledigt markieren</button>
+</div>
+<div class="lernziele-box">
+<h3>Lernziele</h3>
+<p>✅ Ich kann im Café bestellen.<br>✅ Ich kann nach Preisen fragen.<br>✅ Ich kenne die Artikel.</p>
+</div>
+<div class="grammar-box">
+<h3>Grammatik: Nomen und Artikel (Nominativ)</h3>
+<p><strong>der</strong> Tisch, <strong>die</strong> Lampe, <strong>das</strong> Buch.</p>
+<h3>Starke Verben</h3>
+<p>essen (du isst), sprechen (du sprichst), nehmen (du nimmst).</p>
+</div>
+<div class="text-box">
+<h3>Alltagstext: Im Café</h3>
+<button class="speak-all" onclick="speak(this.nextElementSibling.textContent)">🔊 Vorlesen</button>
+<div>
+<p><em>Guten Tag, was möchten Sie?</em></p>
+<p>Ich möchte einen Kaffee und ein Wasser, bitte.</p>
+<p><em>Möchten Sie auch einen Kuchen?</em></p>
+<p>Nein, danke. Was kostet das?</p>
+<p><em>Das macht 4 Euro 50.</em></p>
+<p>Hier bitte. Die Rechnung, bitte.</p>
+</div>
+</div>
+<div class="uebung-box">
+<h3>Übungen</h3>
+<p><strong>1. Welcher Artikel? (der, die, das)</strong></p>
+<div class="quiz-item" data-answer="der"><span>a)</span><input type="text"><span>Kaffee</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<div class="quiz-item" data-answer="die"><span>b)</span><input type="text"><span>Lampe</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<div class="quiz-item" data-answer="das"><span>c)</span><input type="text"><span>Buch</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<div class="quiz-item" data-answer="der"><span>d)</span><input type="text"><span>Computer</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">a) der, b) die, c) das, d) der</p></details>
+</div>
+</div>
+
+<!-- ============ LEKTION 3 ============ -->
+<div class="lektion" id="lektion3">
+<div class="lektion-header">
+  <h2>Lektion 3: Länder, Sprachen, Wohnung</h2>
+  <button class="done-btn" onclick="markDone('lektion3', this)">Als erledigt markieren</button>
+</div>
+<div class="lernziele-box">
+<h3>Lernziele</h3>
+<p>✅ Ich kann über Länder und Sprachen sprechen.<br>✅ Ich kann meine Wohnung beschreiben.</p>
+</div>
+<div class="grammar-box">
+<h3>Grammatik: Genusregeln & Komposita</h3>
+<p><strong>die</strong> Wohnung, <strong>das</strong> Bad, <strong>der</strong> Balkon.</p>
+<p>Komposita: Haus + Tür = <strong>die</strong> Haustür.</p>
+</div>
+<div class="text-box">
+<h3>Alltagstext: Wohnung und Geografie</h3>
+<button class="speak-all" onclick="speak(this.nextElementSibling.textContent)">🔊 Vorlesen</button>
+<div>
+<p>Ich wohne in einer Wohnung in Berlin. Die Wohnung ist klein, aber schön. Sie hat ein Wohnzimmer, ein Schlafzimmer, eine Küche und ein Bad. Im Wohnzimmer steht ein Sofa und ein Schrank. Der Balkon ist groß.</p>
+<p>Berlin liegt im Osten von Deutschland. Ich spreche Deutsch und Englisch. Meine Freundin kommt aus Frankreich.</p>
+</div>
+</div>
+<div class="uebung-box">
+<h3>Übungen</h3>
+<div class="quiz-item" data-answer="Französisch"><span>a) Ich komme aus Frankreich. Ich spreche</span><input type="text"><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<div class="quiz-item" data-answer="Spanien"><span>b) Ich komme aus</span><input type="text"><span>. Ich spreche Spanisch.</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">a) Französisch, b) Spanien</p></details>
+</div>
+</div>
+
+<!-- ============ LEKTION 4 ============ -->
+<div class="lektion" id="lektion4">
+<div class="lektion-header">
+  <h2>Lektion 4: Termine, Verabredungen, Tagesabläufe</h2>
+  <button class="done-btn" onclick="markDone('lektion4', this)">Als erledigt markieren</button>
+</div>
+<div class="lernziele-box">
+<h3>Lernziele</h3>
+<p>✅ Ich kann die Uhrzeit nennen.<br>✅ Ich kann meinen Tagesablauf beschreiben.</p>
+</div>
+<div class="grammar-box">
+<h3>Grammatik: Trennbare Verben & Akkusativ</h3>
+<p><strong>auf</strong>stehen, <strong>ein</strong>kaufen, <strong>an</strong>rufen. (Ich stehe um 7 Uhr <strong>auf</strong>).</p>
+<p>der ➔ <strong>den</strong> (Ich kaufe <strong>den</strong> Apfel).</p>
+</div>
+<div class="text-box">
+<h3>Alltagstext: Mein Tag</h3>
+<button class="speak-all" onclick="speak(this.nextElementSibling.textContent)">🔊 Vorlesen</button>
+<div>
+<p>Ich stehe jeden Tag um 6 Uhr auf. Zuerst frühstücke ich. Dann fahre ich zur Arbeit. Am Nachmittag gehe ich einkaufen. Im Supermarkt kaufe ich Brot, Milch, Käse und einen Apfel.</p>
+</div>
+</div>
+<div class="uebung-box">
+<h3>Übungen</h3>
+<p><strong>1. Trennbare Verben (auf, ein, an)</strong></p>
+<div class="quiz-item" data-answer="an"><span>a) Ich rufe dich morgen</span><input type="text"><span>.</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<div class="quiz-item" data-answer="auf"><span>b) Ich stehe um 7 Uhr</span><input type="text"><span>.</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<div class="quiz-item" data-answer="ein"><span>c) Wir kaufen im Supermarkt</span><input type="text"><span>.</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">a) an, b) auf, c) ein</p></details>
+</div>
+</div>
+
+<!-- ============ LEKTION 5 ============ -->
+<div class="lektion" id="lektion5">
+<div class="lektion-header">
+  <h2>Lektion 5: Orientierung, Beruf & Verkehr</h2>
+  <button class="done-btn" onclick="markDone('lektion5', this)">Als erledigt markieren</button>
+</div>
+<div class="grammar-box">
+<h3>Grammatik: Dativ & Imperativ</h3>
+<p>Ich wohne <strong>in der</strong> Stadt. Ich gehe <strong>zum</strong> Arzt.</p>
+<p><strong>Gehen Sie</strong> geradeaus! <strong>Warten Sie</strong> bitte!</p>
+</div>
+<div class="text-box">
+<h3>Alltagstext: Im Bürogebäude</h3>
+<button class="speak-all" onclick="speak(this.nextElementSibling.textContent)">🔊 Vorlesen</button>
+<div>
+<p><strong>Entschuldigung</strong>, können Sie mir helfen? Ich suche das Büro von Herrn Müller.</p>
+<p><em>Gehen Sie geradeaus, dann die Treppe hoch in den zweiten Stock.</em></p>
+</div>
+</div>
+<div class="uebung-box">
+<h3>Übungen</h3>
+<div class="quiz-item" data-answer="die"><span>a) Ich gehe in</span><input type="text"><span>Schule. (Bewegung)</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<div class="quiz-item" data-answer="der"><span>b) Ich bin in</span><input type="text"><span>Schule. (Position)</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">a) die (Akk.), b) der (Dativ)</p></details>
+</div>
+</div>
+
+<!-- ============ LEKTION 6 ============ -->
+<div class="lektion" id="lektion6">
+<div class="lektion-header">
+  <h2>Lektion 6: Markt, Supermarkt & Rezepte</h2>
+  <button class="done-btn" onclick="markDone('lektion6', this)">Als erledigt markieren</button>
+</div>
+<div class="grammar-box">
+<h3>Grammatik: Akkusativ & Verben mit Akkusativ</h3>
+<p>Ich möchte <strong>einen</strong> Apfel. Ich kaufe <strong>ein</strong> Brot.</p>
+</div>
+<div class="text-box">
+<h3>Alltagstext: Auf dem Markt</h3>
+<button class="speak-all" onclick="speak(this.nextElementSibling.textContent)">🔊 Vorlesen</button>
+<div>
+<p>Jeden Samstag gehe ich auf den Markt. Ich kaufe gern frisches Obst und Gemüse.</p>
+</div>
+</div>
+<div class="uebung-box">
+<h3>Übungen</h3>
+<div class="quiz-item" data-answer="Kilo"><span>a) ein</span><input type="text"><span>Tomaten</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<div class="quiz-item" data-answer="Glas"><span>b) ein</span><input type="text"><span>Milch</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">a) Kilo, b) Glas/Flasche</p></details>
+</div>
+</div>
+
+<!-- ============ LEKTION 7 ============ -->
+<div class="lektion" id="lektion7">
+<div class="lektion-header">
+  <h2>Lektion 7: Mode, Kleidung & Wetter</h2>
+  <button class="done-btn" onclick="markDone('lektion7', this)">Als erledigt markieren</button>
+</div>
+<div class="text-box">
+<h3>Alltagstext: Beim Kleiderkauf & Wetterbericht</h3>
+<button class="speak-all" onclick="speak(this.nextElementSibling.textContent)">🔊 Vorlesen</button>
+<div>
+<p>Ich gehe in ein Geschäft. Ich suche eine Jacke für den Winter. Sie muss warm sein.</p>
+</div>
+</div>
+<div class="uebung-box">
+<h3>Übungen</h3>
+<div class="quiz-item" data-answer="billig"><span>a) teuer ➔</span><input type="text"><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<div class="quiz-item" data-answer="kalt"><span>b) warm ➔</span><input type="text"><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">a) billig, b) kalt</p></details>
+</div>
+</div>
+
+<!-- ============ LEKTION 8 ============ -->
+<div class="lektion" id="lektion8">
+<div class="lektion-header">
+  <h2>Lektion 8: Körper, Sport & Gesundheit</h2>
+  <button class="done-btn" onclick="markDone('lektion8', this)">Als erledigt markieren</button>
+</div>
+<div class="text-box">
+<h3>Alltagstext: Bei der Ärztin</h3>
+<button class="speak-all" onclick="speak(this.nextElementSibling.textContent)">🔊 Vorlesen</button>
+<div>
+<p><strong>Ich:</strong> Guten Tag, ich habe einen Termin. Ich habe Fieber und Husten. Mein Kopf tut weh.</p>
+</div>
+</div>
+<div class="uebung-box">
+<h3>Übungen</h3>
+<div class="quiz-item" data-answer="Kopf"><span>a) Mein</span><input type="text"><span>tut weh.</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">a) Kopf</p></details>
+</div>
+</div>
+
+<!-- ============ LEKTION 9 ============ -->
+<div class="lektion" id="lektion9">
+<div class="lektion-header">
+  <h2>Lektion 9: Erlebnisse und Feste</h2>
+  <button class="done-btn" onclick="markDone('lektion9', this)">Als erledigt markieren</button>
+</div>
+<div class="text-box">
+<h3>Alltagstext: Mein letztes Wochenende</h3>
+<button class="speak-all" onclick="speak(this.nextElementSibling.textContent)">🔊 Vorlesen</button>
+<div>
+<p>Letztes Wochenende habe ich viel gemacht. Am Freitag habe ich gearbeitet und meine Freunde getroffen. Wir sind ins Kino gegangen.</p>
+</div>
+</div>
+<div class="uebung-box">
+<h3>Übungen</h3>
+<div class="quiz-item" data-answer="bin"><span>a) Ich</span><input type="text"><span>nach Berlin gefahren.</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">a) bin</p></details>
+</div>
+</div>
+
+<!-- ============ LEKTION 10 ============ -->
+<div class="lektion" id="lektion10">
+<div class="lektion-header">
+  <h2>Lektion 10: Familie und Lebensformen</h2>
+  <button class="done-btn" onclick="markDone('lektion10', this)">Als erledigt markieren</button>
+</div>
+<div class="text-box">
+<h3>Alltagstext: Meine Familie</h3>
+<button class="speak-all" onclick="speak(this.nextElementSibling.textContent)">🔊 Vorlesen</button>
+<div>
+<p>Ich heiße Sara und komme aus Marokko. Meine Familie ist groß. Mein Vater ist Lehrer, meine Mutter ist Ärztin.</p>
+</div>
+</div>
+<div class="uebung-box">
+<h3>Übungen</h3>
+<div class="quiz-item" data-answer="Meine"><span>a)</span><input type="text"><span>Mutter ist Ärztin.</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">a) Meine</p></details>
+</div>
+</div>
+
+<!-- ============ LEKTION 11 ============ -->
+<div class="lektion" id="lektion11">
+<div class="lektion-header">
+  <h2>Lektion 11: Feste und Traditionen</h2>
+  <button class="done-btn" onclick="markDone('lektion11', this)">Als erledigt markieren</button>
+</div>
+<div class="text-box">
+<h3>Alltagstext: Feste in Deutschland</h3>
+<button class="speak-all" onclick="speak(this.nextElementSibling.textContent)">🔊 Vorlesen</button>
+<div>
+<p>In Deutschland gibt es viele Feste. Weihnachten feiern wir im Dezember mit der Familie. Ostern ist im Frühling.</p>
+</div>
+</div>
+<div class="uebung-box">
+<h3>Übungen</h3>
+<div class="quiz-item" data-answer="Glückwunsch"><span>a) Herzlichen</span><input type="text"><span>zum Geburtstag!</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">a) Glückwunsch</p></details>
+</div>
+</div>
+
+<!-- ============ LEKTION 12 ============ -->
+<div class="lektion" id="lektion12">
+<div class="lektion-header">
+  <h2>Lektion 12: Reisen und Urlaub</h2>
+  <button class="done-btn" onclick="markDone('lektion12', this)">Als erledigt markieren</button>
+</div>
+<div class="text-box">
+<h3>Alltagstext: Urlaubsplanung</h3>
+<button class="speak-all" onclick="speak(this.nextElementSibling.textContent)">🔊 Vorlesen</button>
+<div>
+<p>Ich möchte im Sommer nach Wien fahren. Haben Sie ein Angebot?</p>
+</div>
+</div>
+<div class="uebung-box">
+<h3>Übungen</h3>
+<div class="quiz-item" data-answer="die"><span>a) Ich fahre in</span><input type="text"><span>Schweiz. (Bewegung)</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">a) die</p></details>
+</div>
+</div>
+
+<!-- ============ LEKTION 13 ============ -->
+<div class="lektion" id="lektion13">
+<div class="lektion-header">
+  <h2>Lektion 13: Wohnen und Umzug</h2>
+  <button class="done-btn" onclick="markDone('lektion13', this)">Als erledigt markieren</button>
+</div>
+<div class="text-box">
+<h3>Alltagstext: Wohnungssuche</h3>
+<button class="speak-all" onclick="speak(this.nextElementSibling.textContent)">🔊 Vorlesen</button>
+<div>
+<p>Ich suche eine neue Wohnung in München. Sie soll zentral liegen und nicht zu teuer sein.</p>
+</div>
+</div>
+<div class="uebung-box">
+<h3>Übungen</h3>
+<div class="quiz-item" data-answer="dem"><span>a) Das Buch liegt auf</span><input type="text"><span>Tisch.</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">a) dem</p></details>
+</div>
+</div>
+
+<!-- ============ LEKTION 14 ============ -->
+<div class="lektion" id="lektion14">
+<div class="lektion-header">
+  <h2>Lektion 14: Arbeit und Zukunft</h2>
+  <button class="done-btn" onclick="markDone('lektion14', this)">Als erledigt markieren</button>
+</div>
+<div class="text-box">
+<h3>Alltagstext: Bewerbungsgespräch</h3>
+<button class="speak-all" onclick="speak(this.nextElementSibling.textContent)">🔊 Vorlesen</button>
+<div>
+<p>Was machen Sie beruflich? Ich bin Ingenieur. Ich arbeite seit drei Jahren bei einer Firma in Damaskus.</p>
+</div>
+</div>
+<div class="uebung-box">
+<h3>Übungen</h3>
+<div class="quiz-item" data-answer="weil"><span>a) Ich lerne Deutsch,</span><input type="text"><span>ich in Deutschland arbeiten möchte.</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">a) weil</p></details>
+</div>
+</div>
+
+<!-- ============ WIEDERHOLUNG ============ -->
+<div class="lektion wiederholung" id="wiederholung1">
+<h2>🔄 Wiederholung 1: Lektionen 1–4</h2>
+<div class="uebung-box">
+<h3>Teste dich selbst!</h3>
+<div class="quiz-item" data-answer="komme"><span>1. Ich</span><input type="text"><span>aus Syrien.</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<div class="quiz-item" data-answer="die"><span>2.</span><input type="text"><span>Lampe ist neu.</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">1. komme, 2. die</p></details>
+</div>
+</div>
+
+<div class="lektion wiederholung" id="wiederholung2">
+<h2>🔄 Wiederholung 2: Lektionen 5–9</h2>
+<div class="uebung-box">
+<h3>Teste dich selbst!</h3>
+<div class="quiz-item" data-answer="der"><span>1. Ich wohne in</span><input type="text"><span>Stadt.</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<div class="quiz-item" data-answer="einen"><span>2. Ich möchte</span><input type="text"><span>Kaffee.</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">1. der, 2. einen</p></details>
+</div>
+</div>
+
+<div class="lektion wiederholung" id="wiederholung3">
+<h2>🔄 Wiederholung 3: Lektionen 10–14</h2>
+<div class="uebung-box">
+<h3>Teste dich selbst!</h3>
+<div class="quiz-item" data-answer="Meine"><span>1.</span><input type="text"><span>Mutter ist Ärztin.</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<div class="quiz-item" data-answer="Glückwunsch"><span>2. Herzlichen</span><input type="text"><span>!</span><button class="quiz-check" onclick="checkQuiz(this)">Prüfen</button><span class="quiz-feedback"></span></div>
+<details><summary>Lösungen</summary><p class="loesung">1. Meine, 2. Glückwunsch</p></details>
+</div>
+</div>
+
+<!-- ============ GRAMMATIK ============ -->
+<div class="lektion" id="grammatik-uebersicht">
+<h2>Grammatikübersicht</h2>
+<div class="accordion">
+<div class="accordion-item">
+<div class="accordion-header" onclick="toggleAccordion(this)">1. Verbkonjugation (Präsens)</div>
+<div class="accordion-body">
+<table>
+<tr><th>Person</th><th>wohnen</th><th>sein</th><th>haben</th></tr>
+<tr><td>ich</td><td>wohn<strong>e</strong></td><td><strong>bin</strong></td><td><strong>habe</strong></td></tr>
+<tr><td>du</td><td>wohn<strong>st</strong></td><td><strong>bist</strong></td><td><strong>hast</strong></td></tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ============ FLASHCARDS ============ -->
+<div class="lektion" id="flashcards">
+<h2>🎴 Flashcards – Wortschatz trainieren</h2>
+<p>Klicke auf eine Karte, um die Übersetzung zu sehen.</p>
+<button class="speak-btn" onclick="shuffleCards()">🔀 Mischen</button>
+<div class="flashcard-grid" id="flashcardGrid"></div>
+</div>
+
+<!-- ============ GOETHE EXAM ============ -->
+<div class="lektion exam-box" id="goethe-exam">
+<h2>📝 Goethe-Zertifikat A1: Start Deutsch 1 – Modelltest</h2>
+<div class="exam-part">
+<h3>LESEN (25 Minuten) – 15 Aufgaben</h3>
+<h4>Teil 1: Richtig / Falsch (5 Aufgaben)</h4>
+<div class="lesen-text">
+<p><strong>Text A:</strong> Hallo Lisa, ich komme heute später. Mein Zug hat 30 Minuten Verspätung. Wir treffen uns um 18 Uhr im Café, okay? Gruß, Tom.</p>
+</div>
+<p><strong>1.</strong> Toms Zug ist pünktlich.</p>
+<div class="mc-options" data-answer="falsch">
+<span class="mc-option" onclick="selectMC(this)">Richtig</span>
+<span class="mc-option" onclick="selectMC(this)">Falsch</span>
+</div>
+<button class="quiz-check" style="margin-top:20px;padding:10px 25px;font-size:1em;" onclick="checkAllMC('goethe-lesen')">✅ Lesen auswerten</button>
+<div class="exam-score" id="goethe-lesen-score"></div>
+</div>
+</div>
+
+<!-- ============ ÖSD EXAM ============ -->
+<div class="lektion exam-box" id="oesd-exam">
+<h2>📝 ÖSD Zertifikat A1 (ZA1) – Modelltest</h2>
+<div class="exam-part">
+<h3>LESEN (25 Minuten) – 3 Aufgaben</h3>
+<h4>Aufgabe 1: Situationen und Anzeigen (5 Punkte)</h4>
+<p>Finden Sie zu jeder Situation die passende Anzeige.</p>
+<div class="lesen-text"><p><strong>Situation A:</strong> Sie suchen eine Wohnung für Ihre Familie.</p></div>
+<div class="mc-options" data-answer="2">
+<span class="mc-option" onclick="selectMC(this)">1. „Bäckerei Müller – täglich frisches Brot“</span>
+<span class="mc-option" onclick="selectMC(this)">2. „3-Zimmer-Wohnung, 85 m², Balkon, 750 €“</span>
+<span class="mc-option" onclick="selectMC(this)">3. „Deutschkurs A1 – jetzt anmelden!“</span>
+</div>
+</div>
+</div>
+
+<!-- ============ GLOSSAR ============ -->
+<div class="lektion" id="glossar">
+<h2>Glossar A1 (A–Z) – mit Beispielsätzen</h2>
+<div class="search-container">
+<input type="text" id="glossarSearch" onkeyup="filterGlossar()" placeholder="Wort suchen... (ابحث عن كلمة)">
+</div>
+<div class="alpha-nav" id="alphaNav"></div>
+<div id="glossarContent"></div>
+</div>
+
+</div>
+</div>
+
+<script>
+/* ============ PWA Service Worker ============ */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(e => console.log('SW Fehler:', e));
+  });
+}
+
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.getElementById('installBtn');
+  if (btn) btn.style.display = 'flex';
+});
+
+function installApp() {
+  if (!deferredPrompt) {
+    alert('Um die App zu installieren:\n1. Öffne das Menü (⋮) oben rechts\n2. Wähle „Zum Startbildschirm hinzufügen“');
+    return;
+  }
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then((choiceResult) => {
+    if (choiceResult.outcome === 'accepted') {
+      console.log('User accepted the A2HS prompt');
+    } else {
+      console.log('User dismissed the A2HS prompt');
+    }
+    deferredPrompt = null;
+    document.getElementById('installBtn').style.display = 'none';
+  });
+}
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installBtn').style.display = 'none';
+});
+
+/* ============ Theme & Menu ============ */
+function toggleTheme() {
+  const body = document.body;
+  const isDark = body.getAttribute('data-theme') === 'dark';
+  if (isDark) { body.removeAttribute('data-theme'); localStorage.setItem('theme', 'light'); }
+  else { body.setAttribute('data-theme', 'dark'); localStorage.setItem('theme', 'dark'); }
+}
+if (localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
+
+function toggleMenu() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('active');
+}
+
+/* ============ Audio ============ */
+let germanVoice = null;
+function initVoices() {
+  const voices = speechSynthesis.getVoices();
+  germanVoice = voices.find(v => v.lang.startsWith('de')) || null;
+}
+speechSynthesis.onvoiceschanged = initVoices;
+initVoices();
+
+function speak(text) {
+  if (!('speechSynthesis' in window)) { alert('Dein Browser unterstützt kein Audio.'); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text.trim());
+  u.lang = 'de-DE'; u.rate = 0.9;
+  if (germanVoice) u.voice = germanVoice;
+  speechSynthesis.speak(u);
+}
+
+/* ============ Quiz & MC ============ */
+function checkQuiz(btn) {
+  const item = btn.closest('.quiz-item');
+  const input = item.querySelector('input');
+  const feedback = item.querySelector('.quiz-feedback');
+  const answer = item.dataset.answer.toLowerCase().trim();
+  const userAnswer = input.value.toLowerCase().trim();
+  if (!userAnswer) { feedback.textContent = '⚠️ Bitte eingeben'; feedback.style.color = '#f39c12'; return; }
+  if (userAnswer === answer) {
+    input.classList.remove('wrong'); input.classList.add('correct');
+    feedback.textContent = '✓ Richtig!'; feedback.style.color = '#27ae60';
+  } else {
+    input.classList.remove('correct'); input.classList.add('wrong');
+    feedback.textContent = '✗ Versuche nochmal'; feedback.style.color = '#e74c3c';
+  }
+}
+
+function selectMC(el) {
+  const parent = el.closest('.mc-options');
+  parent.querySelectorAll('.mc-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  const answer = parent.dataset.answer;
+  const index = Array.from(parent.children).indexOf(el) + 1;
+  const isCorrect = (String(index) === answer);
+  el.classList.remove('correct', 'wrong');
+  el.classList.add(isCorrect ? 'correct' : 'wrong');
+}
+
+function checkAllMC(sectionId) {
+  let correct = 0, total = 0;
+  document.querySelectorAll('.mc-options').forEach(mc => {
+    total++;
+    const selected = mc.querySelector('.mc-option.selected');
+    if (selected && selected.classList.contains('correct')) correct++;
+  });
+  const scoreDiv = document.getElementById(sectionId + '-score');
+  if (scoreDiv) scoreDiv.textContent = `Ergebnis: ${correct} / ${total} richtig`;
+}
+
+/* ============ Progress & Accordion ============ */
+const TOTAL_LESSONS = 14;
+function markDone(id, btn) {
+  const key = 'done_' + id;
+  const done = localStorage.getItem(key) === 'true';
+  if (done) { localStorage.removeItem(key); btn.classList.remove('completed'); btn.textContent = 'Als erledigt markieren'; }
+  else { localStorage.setItem(key, 'true'); btn.classList.add('completed'); btn.textContent = 'Erledigt'; }
+  updateProgress();
+}
+function updateProgress() {
+  let count = 0;
+  for (let i = 1; i <= TOTAL_LESSONS; i++) if (localStorage.getItem('done_lektion' + i) === 'true') count++;
+  const pct = Math.round(count / TOTAL_LESSONS * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = count + ' / ' + TOTAL_LESSONS;
+}
+function initProgress() {
+  for (let i = 1; i <= TOTAL_LESSONS; i++) {
+    const btn = document.querySelector('#lektion' + i + ' .done-btn');
+    if (btn && localStorage.getItem('done_lektion' + i) === 'true') { btn.classList.add('completed'); btn.textContent = 'Erledigt'; }
+  }
+  updateProgress();
+}
+function toggleAccordion(header) { header.parentElement.classList.toggle('open'); }
+
+/* ============ Flashcards ============ */
+const FLASHCARDS = [
+  {de:'der Apfel', ar:'التفاحة'}, {de:'das Brot', ar:'الخبز'}, {de:'die Milch', ar:'الحليب'},
+  {de:'das Wasser', ar:'الماء'}, {de:'der Kaffee', ar:'القهوة'}, {de:'der Tisch', ar:'الطاولة'},
+  {de:'der Stuhl', ar:'الكرسي'}, {de:'die Tür', ar:'الباب'}, {de:'das Fenster', ar:'النافذة'},
+  {de:'das Haus', ar:'البيت'}, {de:'die Wohnung', ar:'الشقة'}, {de:'die Küche', ar:'المطبخ'},
+  {de:'das Bad', ar:'الحمام'}, {de:'der Vater', ar:'الأب'}, {de:'die Mutter', ar:'الأم'},
+  {de:'der Bruder', ar:'الأخ'}, {de:'die Schwester', ar:'الأخت'}, {de:'das Kind', ar:'الطفل'},
+  {de:'der Freund', ar:'الصديق'}, {de:'die Arbeit', ar:'العمل'}, {de:'die Schule', ar:'المدرسة'},
+  {de:'der Lehrer', ar:'المعلم'}, {de:'der Arzt', ar:'الطبيب'}, {de:'das Buch', ar:'الكتاب'},
+  {de:'das Auto', ar:'السيارة'}, {de:'der Zug', ar:'القطار'}, {de:'der Bahnhof', ar:'محطة القطار'},
+  {de:'der Flughafen', ar:'المطار'}, {de:'das Geld', ar:'المال'}, {de:'der Preis', ar:'السعر'},
+  {de:'teuer', ar:'غالي'}, {de:'billig', ar:'رخيص'}, {de:'groß', ar:'كبير'}, {de:'klein', ar:'صغير'},
+  {de:'schnell', ar:'سريع'}, {de:'langsam', ar:'بطيء'}, {de:'heute', ar:'اليوم'}, {de:'morgen', ar:'غداً'},
+  {de:'gestern', ar:'أمس'}, {de:'immer', ar:'دائماً'}, {de:'manchmal', ar:'أحياناً'}, {de:'nie', ar:'أبداً'},
+  {de:'schön', ar:'جميل'}, {de:'gut', ar:'جيد'}, {de:'schlecht', ar:'سيء'}, {de:'müde', ar:'متعب'},
+  {de:'glücklich', ar:'سعيد'}, {de:'krank', ar:'مريض'}, {de:'sprechen', ar:'يتحدث'}, {de:'essen', ar:'يأكل'},
+  {de:'trinken', ar:'يشرب'}, {de:'gehen', ar:'يذهب'}, {de:'kommen', ar:'يأتي'}, {de:'sehen', ar:'يرى'},
+  {de:'arbeiten', ar:'يعمل'}, {de:'lernen', ar:'يتعلم'}, {de:'wohnen', ar:'يسكن'}, {de:'fahren', ar:'يقود/يسافر'},
+  {de:'kaufen', ar:'يشتري'}, {de:'bezahlen', ar:'يدفع'}
+];
+function renderFlashcards() {
+  const grid = document.getElementById('flashcardGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  FLASHCARDS.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'flashcard';
+    card.onclick = () => card.classList.toggle('flipped');
+    card.innerHTML = `<div class="flashcard-inner">
+      <div class="flashcard-front">${c.de}<button class="speak-btn" onclick="event.stopPropagation();speak('${c.de.replace(/'/g,"\\'")}')">🔊</button></div>
+      <div class="flashcard-back">${c.ar}</div>
+    </div>`;
+    grid.appendChild(card);
+  });
+}
+function shuffleCards() { FLASHCARDS.sort(() => Math.random() - 0.5); renderFlashcards(); }
+
+/* ============ GLOSSARY ============ */
+const GLOSSARY = [
+  ['ab','Präp','من / اعتباراً من','Ab morgen lerne ich Deutsch.'],
+  ['abfahren','V','يغادر / ينطلق','Der Zug fährt um 8 Uhr ab.'],
+  ['die Abfahrt','N','المغادرة','Die Abfahrt ist um 14 Uhr.'],
+  ['abholen','V','يستلم / يأخذ','Ich hole dich vom Bahnhof ab.'],
+  ['die Adresse','N','عنوان','Wie ist deine Adresse?'],
+  ['alle','Pron','كل','Alle Studenten sind da.'],
+  ['allein','Adj','وحيد','Ich wohne allein.'],
+  ['also','Adv','إذن','Also, ich komme später.'],
+  ['alt','Adj','قديم / عجوز','Mein Auto ist alt.'],
+  ['an','Präp','على / في','Das Bild hängt an der Wand.'],
+  ['anfangen','V','يبدأ','Der Kurs fängt um 9 Uhr an.'],
+  ['der Anfang','N','البداية','Am Anfang war es schwer.'],
+  ['ankommen','V','يصل','Der Zug kommt um 10 Uhr an.'],
+  ['die Ankunft','N','الوصول','Die Ankunft ist um 10 Uhr.'],
+  ['anrufen','V','يتصل هاتفياً','Ich rufe dich morgen an.'],
+  ['die Antwort','N','إجابة','Deine Antwort ist richtig.'],
+  ['antworten','V','يجيب','Bitte antworte auf meine E-Mail.'],
+  ['der Apfel','N','تفاحة','Ich esse einen Apfel.'],
+  ['die Arbeit','N','عمل','Meine Arbeit macht mir Spaß.'],
+  ['arbeiten','V','يعمل','Ich arbeite in einem Büro.'],
+  ['der Arm','N','ذراع','Mein Arm tut weh.'],
+  ['der Arzt','N','طبيب','Ich gehe zum Arzt.'],
+  ['auch','Adv','أيضاً','Ich komme auch mit.'],
+  ['auf','Präp','على','Das Buch liegt auf dem Tisch.'],
+  ['aufstehen','V','يستيقظ','Ich stehe um 7 Uhr auf.'],
+  ['das Auge','N','عين','Meine Augen sind müde.'],
+  ['aus','Präp','من / خارج','Ich komme aus Syrien.'],
+  ['der Ausflug','N','رحلة','Wir machen einen Ausflug.'],
+  ['das Auto','N','سيارة','Mein Auto ist kaputt.'],
+  ['die Bäckerei','N','مخبز','Ich kaufe Brot in der Bäckerei.'],
+  ['das Bad','N','حمام','Die Wohnung hat ein Bad.'],
+  ['baden','V','يستحم','Die Kinder baden im See.'],
+  ['die Bahn','N','قطار','Ich fahre mit der Bahn.'],
+  ['der Bahnhof','N','محطة','Der Bahnhof ist groß.'],
+  ['bald','Adv','قريباً','Ich komme bald.'],
+  ['der Balkon','N','شرفة','Wir sitzen auf dem Balkon.'],
+  ['die Banane','N','موزة','Ich esse eine Banane.'],
+  ['die Bank','N','بنك/مقعد','Das Geld ist auf der Bank.'],
+  ['bar','Adj','نقداً','Ich zahle bar.'],
+  ['der Bauch','N','بطن','Mein Bauch tut weh.'],
+  ['der Baum','N','شجرة','Der Baum ist alt.'],
+  ['bei','Präp','عند','Ich wohne bei meinen Eltern.'],
+  ['das Bein','N','ساق','Mein Bein ist gebrochen.'],
+  ['das Beispiel','N','مثال','Gib mir ein Beispiel.'],
+  ['bekommen','V','يحصل على','Ich bekomme ein Geschenk.'],
+  ['der Beruf','N','مهنة','Was ist Ihr Beruf?'],
+  ['bestellen','V','يطلب','Ich bestelle einen Kaffee.'],
+  ['besuchen','V','يزور','Ich besuche meine Familie.'],
+  ['das Bett','N','سرير','Ich gehe ins Bett.'],
+  ['bezahlen','V','يدفع','Ich bezahle mit Karte.'],
+  ['das Bier','N','بيرة','Er trinkt ein Bier.'],
+  ['das Bild','N','صورة','Das Bild ist schön.'],
+  ['billig','Adj','رخيص','Das Hemd ist billig.'],
+  ['bis','Präp','حتى','Ich arbeite bis 17 Uhr.'],
+  ['bitte','Adv','من فضلك','Bitte hilf mir.'],
+  ['bitten','V','يطلب','Ich bitte um Hilfe.'],
+  ['bleiben','V','يبقى','Ich bleibe zu Hause.'],
+  ['der Bleistift','N','قلم رصاص','Ich schreibe mit dem Bleistift.'],
+  ['die Blume','N','زهرة','Die Blume ist rot.'],
+  ['brauchen','V','يحتاج','Ich brauche Milch.'],
+  ['der Brief','N','رسالة','Ich schreibe einen Brief.'],
+  ['bringen','V','يجلب','Bringst du bitte Brot mit?'],
+  ['das Brot','N','خبز','Ich kaufe frisches Brot.'],
+  ['das Brötchen','N','خبز صغير','Ich esse ein Brötchen.'],
+  ['der Bruder','N','أخ','Mein Bruder ist älter.'],
+  ['das Buch','N','كتاب','Das Buch ist interessant.'],
+  ['buchstabieren','V','يتهجى','Buchstabieren Sie bitte Ihren Namen.'],
+  ['der Bus','N','حافلة','Ich fahre mit dem Bus.'],
+  ['die Butter','N','زبدة','Ich brauche Butter für den Kuchen.'],
+  ['circa','Adv','حوالي','Es kostet circa 10 Euro.'],
+  ['da','Adv','هناك','Da ist mein Haus.'],
+  ['die Dame','N','سيدة','Die Dame ist freundlich.'],
+  ['danken','V','يشكر','Ich danke dir.'],
+  ['danke','Adv','شكراً','Danke für die Hilfe.'],
+  ['dann','Adv','ثم','Ich esse, dann gehe ich.'],
+  ['das Datum','N','تاريخ','Welches Datum ist heute?'],
+  ['dauern','V','يستغرق','Der Film dauert 2 Stunden.'],
+  ['denn','Konj','لأن','Ich bleibe zu Hause, denn ich bin krank.'],
+  ['dir','Pron','لك','Ich gebe dir das Buch.'],
+  ['dort','Adv','هناك','Dort ist der Bahnhof.'],
+  ['draußen','Adv','بالخارج','Wir warten draußen.'],
+  ['drucken','V','يطبع','Ich drucke das Dokument.'],
+  ['drücken','V','يضغط','Drücken Sie den Knopf.'],
+  ['durch','Präp','عبر','Wir gehen durch den Park.'],
+  ['dürfen','V','يُسمح له','Du darfst hier rauchen.'],
+  ['der Durst','N','عطش','Ich habe Durst.'],
+  ['duschen','V','يستحم','Ich dusche jeden Morgen.'],
+  ['die Ecke','N','زاوية','Das Geschäft ist an der Ecke.'],
+  ['das Ei','N','بيضة','Ich esse ein Ei zum Frühstück.'],
+  ['einfach','Adj','بسيط','Die Aufgabe ist einfach.'],
+  ['der Eingang','N','المدخل','Der Eingang ist dort.'],
+  ['einkaufen','V','يتسوق','Ich gehe einkaufen.'],
+  ['einladen','V','يدعو','Ich lade dich zur Party ein.'],
+  ['die Einladung','N','دعوة','Danke für die Einladung.'],
+  ['die Eltern','N','والدان','Meine Eltern wohnen in Damaskus.'],
+  ['die E-Mail','N','بريد إلكتروني','Ich schreibe eine E-Mail.'],
+  ['enden','V','ينتهي','Der Kurs endet um 12 Uhr.'],
+  ['das Ende','N','النهاية','Das ist das Ende.'],
+  ['entschuldigen','V','يعتذر','Entschuldigen Sie bitte.'],
+  ['er','Pron','هو','Er ist mein Freund.'],
+  ['erklären','V','يشرح','Können Sie das erklären?'],
+  ['erzählen','V','يحكي','Erzähl mir eine Geschichte.'],
+  ['essen','V','يأكل','Ich esse eine Pizza.'],
+  ['das Essen','N','طعام','Das Essen ist lecker.'],
+  ['fahren','V','يقود/يسافر','Ich fahre nach Berlin.'],
+  ['der Fahrer','N','سائق','Der Fahrer ist freundlich.'],
+  ['die Fahrkarte','N','تذكرة','Ich kaufe eine Fahrkarte.'],
+  ['das Fahrrad','N','دراجة','Ich fahre mit dem Fahrrad.'],
+  ['falsch','Adj','خاطئ','Das ist falsch.'],
+  ['die Familie','N','عائلة','Meine Familie ist groß.'],
+  ['der Familienname','N','اسم العائلة','Wie ist Ihr Familienname?'],
+  ['die Farbe','N','لون','Welche Farbe magst du?'],
+  ['fehlen','V','ينقص','Was fehlt Ihnen?'],
+  ['der Fehler','N','خطأ','Das ist ein Fehler.'],
+  ['das Fieber','N','حُمّى','Ich habe Fieber.'],
+  ['der Film','N','فيلم','Der Film ist gut.'],
+  ['finden','V','يجد','Ich finde den Schlüssel nicht.'],
+  ['der Fisch','N','سمكة','Ich esse keinen Fisch.'],
+  ['die Flasche','N','زجاجة','Ich brauche eine Flasche Wasser.'],
+  ['das Fleisch','N','لحم','Ich esse kein Fleisch.'],
+  ['fliegen','V','يطير','Ich fliege nach Deutschland.'],
+  ['der Flughafen','N','مطار','Der Flughafen ist weit.'],
+  ['das Flugzeug','N','طائرة','Das Flugzeug landet um 10 Uhr.'],
+  ['die Frage','N','سؤال','Ich habe eine Frage.'],
+  ['fragen','V','يسأل','Ich frage den Lehrer.'],
+  ['die Frau','N','امرأة','Die Frau ist meine Nachbarin.'],
+  ['frei','Adj','حر/متاح','Der Platz ist frei.'],
+  ['sich freuen','V','يفرح','Ich freue mich auf den Urlaub.'],
+  ['der Freund','N','صديق','Mein Freund heißt Ali.'],
+  ['frühstücken','V','يتناول الفطور','Ich frühstücke um 7 Uhr.'],
+  ['das Frühstück','N','فطور','Das Frühstück ist fertig.'],
+  ['der Fuß','N','قدم','Mein Fuß tut weh.'],
+  ['der Fußball','N','كرة القدم','Ich spiele Fußball.'],
+  ['der Garten','N','حديقة','Wir haben einen Garten.'],
+  ['der Gast','N','ضيف','Wir haben Gäste.'],
+  ['geben','V','يعطي','Gib mir bitte das Buch.'],
+  ['der Geburtstag','N','عيد ميلاد','Wann hast du Geburtstag?'],
+  ['gefallen','V','يعجب','Das Bild gefällt mir.'],
+  ['gegen','Präp','ضد/حوالي','Ich komme gegen 8 Uhr.'],
+  ['gerade','Adv','للتو','Ich bin gerade gekommen.'],
+  ['geradeaus','Adv','مباشرة','Gehen Sie geradeaus.'],
+  ['gern','Adv','بكل سرور','Ich trinke gern Kaffee.'],
+  ['das Geschäft','N','متجر','Das Geschäft ist geschlossen.'],
+  ['das Geschenk','N','هدية','Das Geschenk ist für dich.'],
+  ['das Gespräch','N','محادثة','Wir haben ein Gespräch.'],
+  ['gestern','Adv','أمس','Gestern war ich zu Hause.'],
+  ['das Getränk','N','مشروب','Welches Getränk möchten Sie?'],
+  ['gewinnen','V','يفوز','Ich möchte gewinnen.'],
+  ['das Glas','N','كأس','Ein Glas Wasser, bitte.'],
+  ['glauben','V','يعتقد','Ich glaube, du hast Recht.'],
+  ['gleich','Adv','حالاً','Ich komme gleich.'],
+  ['das Glück','N','حظ/سعادة','Ich habe Glück.'],
+  ['glücklich','Adj','سعيد','Ich bin glücklich.'],
+  ['der Grad','N','درجة','Es sind 20 Grad.'],
+  ['groß','Adj','كبير','Das Haus ist groß.'],
+  ['die Größe','N','مقاس','Welche Größe haben Sie?'],
+  ['die Großmutter','N','جدة','Meine Großmutter ist 80.'],
+  ['der Großvater','N','جد','Mein Großvater ist nett.'],
+  ['gut','Adj','جيد','Das Essen ist gut.'],
+  ['das Haar','N','شعر','Sie hat lange Haare.'],
+  ['haben','V','يملك','Ich habe ein Auto.'],
+  ['das Hähnchen','N','دجاج','Ich esse Hähnchen mit Reis.'],
+  ['die Halle','N','قاعة','Die Halle ist groß.'],
+  ['hallo','Interj','مرحباً','Hallo, wie geht es dir?'],
+  ['halten','V','يتوقف','Der Bus hält hier.'],
+  ['die Haltestelle','N','محطة','Die Haltestelle ist dort.'],
+  ['die Hand','N','يد','Wasch dir die Hände.'],
+  ['das Handy','N','هاتف محمول','Mein Handy ist neu.'],
+  ['das Haus','N','منزل','Das Haus ist alt.'],
+  ['die Hausaufgabe','N','واجب منزلي','Ich mache meine Hausaufgaben.'],
+  ['die Heimat','N','الوطن','Meine Heimat ist Syrien.'],
+  ['heiraten','V','يتزوج','Sie heiraten im Sommer.'],
+  ['heißen','V','يُسمى','Ich heiße Omar.'],
+  ['helfen','V','يساعد','Kannst du mir helfen?'],
+  ['hell','Adj','فاتح','Das Zimmer ist hell.'],
+  ['der Herd','N','موقد','Der Herd ist kaputt.'],
+  ['der Herr','N','سيد','Guten Tag, Herr Müller.'],
+  ['herzlich','Adj','ودّي','Herzlichen Glückwunsch!'],
+  ['heute','Adv','اليوم','Heute ist Montag.'],
+  ['hier','Adv','هنا','Hier ist mein Platz.'],
+  ['die Hilfe','N','مساعدة','Danke für deine Hilfe.'],
+  ['hinten','Adv','في الخلف','Das Auto ist hinten.'],
+  ['das Hobby','N','هواية','Mein Hobby ist Lesen.'],
+  ['hoch','Adj','مرتفع','Der Berg ist hoch.'],
+  ['die Hochzeit','N','حفل زفاف','Die Hochzeit ist im Mai.'],
+  ['holen','V','يجلب','Ich hole dich ab.'],
+  ['hören','V','يسمع','Ich höre Musik.'],
+  ['das Hotel','N','فندق','Das Hotel ist zentral.'],
+  ['der Hund','N','كلب','Der Hund ist klein.'],
+  ['der Hunger','N','جوع','Ich habe Hunger.'],
+  ['ich','Pron','أنا','Ich bin Student.'],
+  ['immer','Adv','دائماً','Ich bin immer pünktlich.'],
+  ['in','Präp','في','Ich wohne in Berlin.'],
+  ['die Information','N','معلومة','Ich brauche eine Information.'],
+  ['das Internet','N','إنترنت','Ich surfe im Internet.'],
+  ['ja','Adv','نعم','Ja, das ist richtig.'],
+  ['die Jacke','N','جاكيت','Die Jacke ist warm.'],
+  ['jetzt','Adv','الآن','Ich komme jetzt.'],
+  ['der Job','N','وظيفة','Ich habe einen neuen Job.'],
+  ['jung','Adj','شاب','Er ist noch jung.'],
+  ['der Junge','N','ولد','Der Junge spielt Fußball.'],
+  ['der Kaffee','N','قهوة','Ich trinke Kaffee.'],
+  ['kaputt','Adj','معطل','Mein Handy ist kaputt.'],
+  ['die Karte','N','بطاقة','Ich bezahle mit Karte.'],
+  ['die Kartoffel','N','بطاطس','Ich kaufe Kartoffeln.'],
+  ['die Kasse','N','صندوق الدفع','Bitte zahlen Sie an der Kasse.'],
+  ['kaufen','V','يشتري','Ich kaufe ein Buch.'],
+  ['kein','Pron','لا (للنفي)','Ich habe kein Geld.'],
+  ['kennen','V','يعرف','Kennst du ihn?'],
+  ['kennenlernen','V','يتعرف على','Ich möchte dich kennenlernen.'],
+  ['das Kind','N','طفل','Das Kind ist klein.'],
+  ['das Kino','N','سينما','Wir gehen ins Kino.'],
+  ['klar','Adj','واضح','Das ist klar.'],
+  ['die Klasse','N','صف','Die Klasse ist groß.'],
+  ['die Kleidung','N','ملابس','Ich brauche neue Kleidung.'],
+  ['klein','Adj','صغير','Das Zimmer ist klein.'],
+  ['kochen','V','يطبخ','Ich koche heute.'],
+  ['der Koffer','N','حقيبة سفر','Mein Koffer ist schwer.'],
+  ['der Kollege','N','زميل','Mein Kollege ist nett.'],
+  ['kommen','V','يأتي','Ich komme aus Syrien.'],
+  ['können','V','يستطيع','Ich kann schwimmen.'],
+  ['das Konto','N','حساب بنكي','Ich habe ein Konto bei der Bank.'],
+  ['der Kopf','N','رأس','Mein Kopf tut weh.'],
+  ['kosten','V','يكلف','Was kostet das?'],
+  ['krank','Adj','مريض','Ich bin krank.'],
+  ['die Küche','N','مطبخ','Die Küche ist modern.'],
+  ['der Kuchen','N','كعكة','Ich esse einen Kuchen.'],
+  ['der Kugelschreiber','N','قلم جاف','Ich schreibe mit dem Kugelschreiber.'],
+  ['der Kühlschrank','N','ثلاجة','Der Kühlschrank ist leer.'],
+  ['der Kunde','N','عميل','Der Kunde ist zufrieden.'],
+  ['der Kurs','N','دورة','Der Kurs beginnt um 9 Uhr.'],
+  ['kurz','Adj','قصير','Die Hose ist zu kurz.'],
+  ['lachen','V','يضحك','Wir lachen viel.'],
+  ['der Laden','N','متجر','Der Laden ist klein.'],
+  ['das Land','N','بلد/ريف','Ich komme aus einem warmen Land.'],
+  ['lang','Adj','طويل','Der Film ist lang.'],
+  ['langsam','Adj','بطيء','Sprich bitte langsam.'],
+  ['laufen','V','يمشي/يجري','Ich laufe jeden Tag.'],
+  ['laut','Adj','عالٍ','Die Musik ist zu laut.'],
+  ['leben','V','يعيش','Ich lebe in Berlin.'],
+  ['das Leben','N','حياة','Das Leben ist schön.'],
+  ['die Lebensmittel','N','مواد غذائية','Ich kaufe Lebensmittel.'],
+  ['ledig','Adj','أعزب','Ich bin ledig.'],
+  ['der Lehrer','N','معلم','Der Lehrer ist nett.'],
+  ['leicht','Adj','سهل/خفيف','Die Aufgabe ist leicht.'],
+  ['leider','Adv','للأسف','Leider kann ich nicht kommen.'],
+  ['lernen','V','يتعلم','Ich lerne Deutsch.'],
+  ['lesen','V','يقرأ','Ich lese ein Buch.'],
+  ['die Leute','N','ناس','Viele Leute kommen.'],
+  ['das Licht','N','ضوء','Mach das Licht an.'],
+  ['lieben','V','يحب','Ich liebe dich.'],
+  ['lieber','Adv','بالتفضيل','Ich trinke lieber Tee.'],
+  ['das Lied','N','أغنية','Das Lied ist schön.'],
+  ['liegen','V','يستلقي','Das Buch liegt auf dem Tisch.'],
+  ['links','Adv','يسار','Gehen Sie links.'],
+  ['die Lösung','N','حل','Die Lösung ist richtig.'],
+  ['lustig','Adj','مضحك','Der Film ist lustig.'],
+  ['machen','V','يفعل','Was machst du?'],
+  ['das Mädchen','N','فتاة','Das Mädchen ist nett.'],
+  ['der Mann','N','رجل','Der Mann ist groß.'],
+  ['das Meer','N','بحر','Wir fahren ans Meer.'],
+  ['mehr','Adv','أكثر','Ich möchte mehr Wasser.'],
+  ['die Milch','N','حليب','Ich trinke Milch.'],
+  ['mit','Präp','مع','Ich komme mit dir.'],
+  ['mitbringen','V','يجلب معه','Bringst du bitte Kuchen mit?'],
+  ['mitkommen','V','يأتي معه','Kommst du mit?'],
+  ['die Möbel','N','أثاث','Die Möbel sind neu.'],
+  ['möchten','V','يود/يرغب','Ich möchte einen Kaffee.'],
+  ['mögen','V','يحب','Ich mag Schokolade.'],
+  ['möglich','Adj','ممكن','Das ist nicht möglich.'],
+  ['morgen','Adv','غداً','Morgen habe ich frei.'],
+  ['müde','Adj','متعب','Ich bin müde.'],
+  ['der Mund','N','فم','Öffnen Sie den Mund.'],
+  ['müssen','V','يجب','Ich muss gehen.'],
+  ['die Mutter','N','أم','Meine Mutter ist Ärztin.'],
+  ['nach','Präp','بعد/إلى','Ich fahre nach Berlin.'],
+  ['der Name','N','اسم','Mein Name ist Anna.'],
+  ['nehmen','V','يأخذ','Ich nehme den Bus.'],
+  ['nein','Adv','لا','Nein, danke.'],
+  ['neu','Adj','جديد','Das Auto ist neu.'],
+  ['nicht','Adv','ليس','Ich bin nicht müde.'],
+  ['nichts','Pron','لا شيء','Ich habe nichts.'],
+  ['nie','Adv','أبداً','Ich trinke nie Alkohol.'],
+  ['noch','Adv','لا يزال','Ich habe noch Zeit.'],
+  ['die Nummer','N','رقم','Meine Nummer ist 123.'],
+  ['nur','Adv','فقط','Ich habe nur 5 Euro.'],
+  ['oben','Adv','في الأعلى','Das Buch ist oben.'],
+  ['das Obst','N','فواكه','Ich kaufe Obst.'],
+  ['oder','Konj','أو','Kaffee oder Tee?'],
+  ['öffnen','V','يفتح','Öffnen Sie bitte die Tür.'],
+  ['oft','Adv','غالباً','Ich gehe oft ins Kino.'],
+  ['ohne','Präp','بدون','Ich trinke Kaffee ohne Zucker.'],
+  ['das Öl','N','زيت','Ich brauche Öl für den Salat.'],
+  ['der Ort','N','مكان','Der Ort ist schön.'],
+  ['das Papier','N','ورق','Ich brauche Papier.'],
+  ['die Party','N','حفلة','Wir machen eine Party.'],
+  ['der Pass','N','جواز سفر','Hier ist mein Pass.'],
+  ['die Pause','N','استراحة','Wir machen eine Pause.'],
+  ['der Plan','N','خطة','Was ist der Plan?'],
+  ['der Platz','N','مكان','Ist dieser Platz frei?'],
+  ['die Polizei','N','شرطة','Rufen Sie die Polizei!'],
+  ['die Post','N','بريد','Ich gehe zur Post.'],
+  ['der Preis','N','سعر','Der Preis ist gut.'],
+  ['das Problem','N','مشكلة','Kein Problem.'],
+  ['die Prüfung','N','امتحان','Ich habe eine Prüfung.'],
+  ['pünktlich','Adj','دقيق المواعيد','Sei bitte pünktlich.'],
+  ['rauchen','V','يدخن','Hier darf man nicht rauchen.'],
+  ['der Raum','N','غرفة','Der Raum ist groß.'],
+  ['die Rechnung','N','فاتورة','Die Rechnung, bitte.'],
+  ['rechts','Adv','يمين','Gehen Sie rechts.'],
+  ['regnen','V','تمطر','Es regnet heute.'],
+  ['der Regen','N','مطر','Der Regen ist stark.'],
+  ['der Reis','N','أرز','Ich esse Reis mit Hähnchen.'],
+  ['reisen','V','يسافر','Ich reise gern.'],
+  ['die Reise','N','رحلة','Die Reise war schön.'],
+  ['reparieren','V','يصلح','Kannst du das reparieren?'],
+  ['das Restaurant','N','مطعم','Das Restaurant ist gut.'],
+  ['richtig','Adj','صحيح','Das ist richtig.'],
+  ['ruhig','Adj','هادئ','Die Straße ist ruhig.'],
+  ['der Saft','N','عصير','Ich trinke einen Saft.'],
+  ['sagen','V','يقول','Was sagst du?'],
+  ['der Salat','N','سلطة','Ich esse einen Salat.'],
+  ['das Salz','N','ملح','Gib mir bitte das Salz.'],
+  ['scheinen','V','يسطع','Die Sonne scheint.'],
+  ['schicken','V','يرسل','Ich schicke dir eine E-Mail.'],
+  ['schlafen','V','ينام','Ich schlafe 8 Stunden.'],
+  ['schlecht','Adj','سيء','Mir ist schlecht.'],
+  ['schließen','V','يغلق','Das Geschäft schließt um 20 Uhr.'],
+  ['der Schlüssel','N','مفتاح','Wo ist mein Schlüssel?'],
+  ['schmecken','V','يتذوق','Das Essen schmeckt gut.'],
+  ['schnell','Adj','سريع','Der Zug ist schnell.'],
+  ['schön','Adj','جميل','Das Wetter ist schön.'],
+  ['der Schrank','N','خزانة','Die Kleidung ist im Schrank.'],
+  ['schreiben','V','يكتب','Ich schreibe einen Brief.'],
+  ['der Schuh','N','حذاء','Die Schuhe sind neu.'],
+  ['die Schule','N','مدرسة','Die Schule beginnt um 8 Uhr.'],
+  ['der Schüler','N','طالب','Der Schüler lernt Deutsch.'],
+  ['schwer','Adj','صعب/ثقيل','Deutsch ist nicht schwer.'],
+  ['die Schwester','N','أخت','Meine Schwester ist jünger.'],
+  ['schwimmen','V','يسبح','Ich schwimme gern.'],
+  ['der See','N','بحيرة','Wir fahren an den See.'],
+  ['sehen','V','يرى','Ich sehe dich.'],
+  ['sehr','Adv','جداً','Das ist sehr gut.'],
+  ['sein','V','يكون','Ich bin Student.'],
+  ['seit','Präp','منذ','Ich lerne seit einem Jahr Deutsch.'],
+  ['sich','Pron','نفسه','Er wäscht sich.'],
+  ['sie','Pron','هي/هم','Sie ist meine Freundin.'],
+  ['sitzen','V','يجلس','Ich sitze auf dem Stuhl.'],
+  ['so','Adv','هكذا','So ist das Leben.'],
+  ['das Sofa','N','أريكة','Das Sofa ist bequem.'],
+  ['sofort','Adv','فوراً','Ich komme sofort.'],
+  ['der Sohn','N','ابن','Mein Sohn ist 5 Jahre alt.'],
+  ['sollen','V','ينبغي','Du sollst mehr schlafen.'],
+  ['die Sonne','N','شمس','Die Sonne scheint.'],
+  ['spät','Adj','متأخر','Es ist schon spät.'],
+  ['spielen','V','يلعب','Die Kinder spielen.'],
+  ['der Sport','N','رياضة','Ich mache Sport.'],
+  ['die Sprache','N','لغة','Deutsch ist eine schöne Sprache.'],
+  ['sprechen','V','يتحدث','Sprechen Sie Englisch?'],
+  ['die Stadt','N','مدينة','Berlin ist eine große Stadt.'],
+  ['stehen','V','يقف','Ich stehe vor dem Haus.'],
+  ['die Stelle','N','مكان/وظيفة','Ich suche eine Stelle.'],
+  ['der Stock','N','طابق','Ich wohne im dritten Stock.'],
+  ['die Straße','N','شارع','Die Straße ist lang.'],
+  ['studieren','V','يدرس','Ich studiere Medizin.'],
+  ['der Student','N','طالب جامعي','Der Student lernt viel.'],
+  ['die Stunde','N','ساعة','Der Kurs dauert 2 Stunden.'],
+  ['suchen','V','يبحث','Ich suche meinen Schlüssel.'],
+  ['tanzen','V','يرقص','Wir tanzen gern.'],
+  ['die Tasche','N','حقيبة','Meine Tasche ist schwer.'],
+  ['das Taxi','N','سيارة أجرة','Ich nehme ein Taxi.'],
+  ['der Tee','N','شاي','Ich trinke Tee.'],
+  ['der Teil','N','جزء','Das ist mein Teil.'],
+  ['telefonieren','V','يتحدث هاتفياً','Ich telefoniere mit meiner Mutter.'],
+  ['der Termin','N','موعد','Ich habe einen Termin um 10 Uhr.'],
+  ['teuer','Adj','غالي','Das ist zu teuer.'],
+  ['der Text','N','نص','Lies den Text.'],
+  ['das Thema','N','موضوع','Das Thema ist interessant.'],
+  ['der Tisch','N','طاولة','Das Buch liegt auf dem Tisch.'],
+  ['die Tochter','N','ابنة','Meine Tochter ist 3 Jahre alt.'],
+  ['die Toilette','N','مرحاض','Wo ist die Toilette?'],
+  ['die Tomate','N','طماطم','Ich kaufe Tomaten.'],
+  ['sich treffen','V','يلتقي','Wir treffen uns um 8 Uhr.'],
+  ['die Treppe','N','سلم','Die Treppe ist dort.'],
+  ['trinken','V','يشرب','Ich trinke Wasser.'],
+  ['tschüss','Interj','وداعاً','Tschüss, bis morgen!'],
+  ['die Uhr','N','ساعة','Wie viel Uhr ist es?'],
+  ['um','Präp','حول/في','Der Kurs beginnt um 9 Uhr.'],
+  ['und','Konj','و','Ich und du.'],
+  ['unten','Adv','في الأسفل','Die Küche ist unten.'],
+  ['unter','Präp','تحت','Die Katze ist unter dem Tisch.'],
+  ['der Unterricht','N','درس','Der Unterricht ist interessant.'],
+  ['der Urlaub','N','عطلة','Ich fahre in den Urlaub.'],
+  ['der Vater','N','أب','Mein Vater ist Lehrer.'],
+  ['verboten','Adj','ممنوع','Rauchen ist verboten.'],
+  ['verkaufen','V','يبيع','Ich verkaufe mein Auto.'],
+  ['der Verkäufer','N','بائع','Der Verkäufer ist freundlich.'],
+  ['verstehen','V','يفهم','Ich verstehe dich.'],
+  ['viel','Adj','كثير','Ich habe viel Arbeit.'],
+  ['vielleicht','Adv','ربما','Vielleicht komme ich.'],
+  ['von','Präp','من','Ich komme von der Arbeit.'],
+  ['vor','Präp','قبل/أمام','Ich warte vor dem Kino.'],
+  ['der Vorname','N','الاسم الأول','Mein Vorname ist Omar.'],
+  ['wandern','V','يتنزه','Wir wandern im Wald.'],
+  ['wann','Adv','متى','Wann kommst du?'],
+  ['warten','V','ينتظر','Ich warte auf den Bus.'],
+  ['warum','Adv','لماذا','Warum lernst du Deutsch?'],
+  ['was','Pron','ماذا','Was machst du?'],
+  ['das Wasser','N','ماء','Ich trinke Wasser.'],
+  ['weh tun','V','يؤلم','Mein Kopf tut weh.'],
+  ['der Wein','N','نبيذ','Er trinkt Wein.'],
+  ['weit','Adj','بعيد','Der Bahnhof ist weit.'],
+  ['die Welt','N','عالم','Die Welt ist groß.'],
+  ['wenig','Adj','قليل','Ich habe wenig Zeit.'],
+  ['wer','Pron','من','Wer ist das?'],
+  ['werden','V','يصبح','Ich werde Arzt.'],
+  ['das Wetter','N','طقس','Das Wetter ist schön.'],
+  ['wichtig','Adj','مهم','Das ist wichtig.'],
+  ['wie','Adv','كيف','Wie geht es dir?'],
+  ['wiederholen','V','يكرر','Können Sie das wiederholen?'],
+  ['der Wind','N','ريح','Der Wind ist stark.'],
+  ['wir','Pron','نحن','Wir lernen Deutsch.'],
+  ['wissen','V','يعرف','Ich weiß es nicht.'],
+  ['wo','Adv','أين','Wo wohnst du?'],
+  ['woher','Adv','من أين','Woher kommst du?'],
+  ['wohin','Adv','إلى أين','Wohin gehst du?'],
+  ['wohnen','V','يسكن','Ich wohne in Berlin.'],
+  ['die Wohnung','N','شقة','Die Wohnung ist groß.'],
+  ['wollen','V','يريد','Ich will nach Hause.'],
+  ['das Wort','N','كلمة','Das Wort ist neu.'],
+  ['zahlen','V','يدفع','Ich zahle die Rechnung.'],
+  ['die Zeit','N','وقت','Ich habe keine Zeit.'],
+  ['die Zeitung','N','صحيفة','Ich lese die Zeitung.'],
+  ['das Zimmer','N','غرفة','Das Zimmer ist klein.'],
+  ['zu','Präp','إلى/مغلق','Ich gehe zu Fuß.'],
+  ['zufrieden','Adj','راضٍ','Ich bin zufrieden.'],
+  ['der Zug','N','قطار','Der Zug fährt um 8 Uhr.'],
+  ['zurück','Adv','للخلف','Ich komme zurück.'],
+  ['zusammen','Adv','معاً','Wir lernen zusammen.'],
+  ['zwischen','Präp','بين','Das Buch ist zwischen den Stühlen.']
+];
+
+function renderGlossary() {
+  const groups = {};
+  GLOSSARY.forEach(([w, t, ar, ex]) => {
+    const letter = w.replace(/^(der|die|das)\s+/, '').charAt(0).toUpperCase();
+    if (!groups[letter]) groups[letter] = [];
+    groups[letter].push([w, t, ar, ex]);
+  });
+  const nav = document.getElementById('alphaNav');
+  const content = document.getElementById('glossarContent');
+  nav.innerHTML = ''; content.innerHTML = '';
+  Object.keys(groups).sort().forEach(letter => {
+    const a = document.createElement('a');
+    a.href = '#glossar-' + letter; a.textContent = letter;
+    nav.appendChild(a);
+    const section = document.createElement('div');
+    section.id = 'glossar-' + letter; section.className = 'glossar-section';
+    let html = `<h3 style="background:var(--secondary-color);color:white;padding:8px;border-radius:5px;border:none;">${letter}</h3>
+    <table><thead><tr><th>Wort</th><th>Typ</th><th>Beispiel</th><th>Übersetzung</th></tr></thead><tbody>`;
+    groups[letter].forEach(([w, t, ar, ex]) => {
+      const badgeClass = 'badge-' + t.split('/')[0];
+      html += `<tr><td><strong>${w}</strong></td><td><span class="type ${badgeClass}">${t}</span></td><td style="font-size:0.9em;color:var(--text-color);">${ex}</td><td class="arabic">${ar}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    section.innerHTML = html; content.appendChild(section);
+  });
+}
+
+function filterGlossar() {
+  const filter = document.getElementById('glossarSearch').value.toLowerCase();
+  document.querySelectorAll('.glossar-section').forEach(section => {
+    const rows = section.querySelectorAll('tbody tr');
+    let visible = 0;
+    rows.forEach(row => {
+      if (row.textContent.toLowerCase().includes(filter)) { row.style.display = ''; visible++; }
+      else row.style.display = 'none';
+    });
+    section.style.display = (filter && visible === 0) ? 'none' : '';
+  });
+}
+
+/* ============ Init ============ */
+document.addEventListener('DOMContentLoaded', () => {
+  initProgress();
+  renderFlashcards();
+  renderGlossary();
+});
+</script>
+</body>
+</html>
